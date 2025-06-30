@@ -23,12 +23,14 @@ app.use(
   bodyParser.json({
     verify: rawBodySaver,
     type: "application/json",
+    limit: "5mb",
   })
 );
 app.use(
   bodyParser.text({
     verify: rawBodySaver,
     type: ["application/xml", "text/xml"],
+    limit: "5mb",
   })
 );
 
