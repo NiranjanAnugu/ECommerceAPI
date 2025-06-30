@@ -30,13 +30,13 @@ app.use(bodyParser.text({ type: '*/xml' }));
 app.post('/docusign/webhook', async (req, res) => {
   console.info("docusign webhook event call before");  
   const rawXml = req.body;
-  const docusignSignature = req.headers['x-docusign-signature-1'];
+  //const docusignSignature = req.headers['x-docusign-signature-1'];
   console.info("docusign webhook event after");
   console.log(rawXml);
-  if (!isValidHmacSignature(rawXml, docusignSignature)) {
-    console.warn('❌ Invalid HMAC Signature – rejected');
-    return res.status(401).send('Unauthorized: Invalid signature');
-  }
+//   if (!isValidHmacSignature(rawXml, docusignSignature)) {
+//     console.warn('❌ Invalid HMAC Signature – rejected');
+//     return res.status(401).send('Unauthorized: Invalid signature');
+//   }
 
   xml2js.parseString(req.body, { explicitArray: false }, async (err, result) => {
     if (err) return res.status(400).send('Invalid XML');
