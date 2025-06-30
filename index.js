@@ -60,10 +60,12 @@ app.post('docusign/webhook', async (req, res) => {
   });
 });
 app.get("/", (req, res) =>{
+        console.warn("PORT THIS IS TEST");
 res.send("Hello! This is Niranjan Reddy Anugu.")
 });
 
 app.get("/greet", (req, res) =>{
+    console.log("PORT THIS IS TEST");
 res.json({"message": "Welcome to the Node.js API!"});
 });
 
