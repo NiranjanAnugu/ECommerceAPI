@@ -63,6 +63,11 @@ async function sendToQueue(payload) {
 app.post('/docusign/webhook', async (req, res) => {
   const contentType = req.headers['content-type'];
   const signature = req.headers['x-docusign-signature-1'];
+const sig1 = req.headers['x-docusign-signature-1'];
+  const sig2 = req.headers['x-docusign-signature-2']; // if using multiple keys
+
+  console.info(`Signature 1: ${sig1}`);
+  console.info(`Signature 2: ${sig2}`);
 
   console.log("📩 Content-Type:", contentType);
 //  console.log("📩 Signature:", signature);
@@ -70,7 +75,7 @@ app.post('/docusign/webhook', async (req, res) => {
   if (contentType.includes('xml')) {
     const rawXml = req.body;
 
-    if (!isValidHmacSignature(rawXml, signature)) {
+    if (!isValidHmacSignature(rawXml, sig2)) {
       return res.status(401).send('Invalid signature (XML)');
     }
 
@@ -88,7 +93,7 @@ app.post('/docusign/webhook', async (req, res) => {
     const jsonBody = req.body;
     const rawJsonString = JSON.stringify(jsonBody);
 
-    if (!isValidHmacSignature(rawJsonString, signature)) {
+    if (!isValidHmacSignature(rawJsonString, sig2)) {
       return res.status(401).send('Invalid signature (JSON)');
     }
     console.log("JSON", jsonBody);
