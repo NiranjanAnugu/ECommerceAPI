@@ -14,8 +14,20 @@ const sender = sbClient.createSender(queueName);
 const PORT = process.env.PORT || 3000;
 
 
-// app.use(express.json());
-app.use(bodyParser.text({ type: '*/xml' }));
+
+app.use(
+  bodyParser.json({
+    verify: rawBodySaver,
+    type: "application/json",
+  })
+);
+app.use(
+  bodyParser.text({
+    verify: rawBodySaver,
+    type: ["application/xml", "text/xml"],
+  })
+);
+
 
 // function isValidHmacSignature(reqBody, signatureHeader) {
 //   const computed = crypto
