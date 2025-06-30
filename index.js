@@ -9,13 +9,13 @@ const connectionString = process.env.AZURE_SERVICE_BUS_CONNECTION_STRING;
 const queueName = process.env.AZURE_SERVICE_BUS_QUEUE_NAME;
 const hmacKey = process.env.DOCUSIGN_HMAC_KEY;
 
-function isValidHmacSignature(reqBody, signatureHeader) {
-  const computed = crypto
-    .createHmac('sha256', hmacKey)
-    .update(reqBody, 'utf8')
-    .digest('base64');
-  return computed === signatureHeader;
-}
+// function isValidHmacSignature(reqBody, signatureHeader) {
+//   const computed = crypto
+//     .createHmac('sha256', hmacKey)
+//     .update(reqBody, 'utf8')
+//     .digest('base64');
+//   return computed === signatureHeader;
+// }
 
 
 const sbClient = new ServiceBusClient(connectionString);
