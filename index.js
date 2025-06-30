@@ -1,6 +1,7 @@
 require("dotenv").config();
 const bodyParser = require("body-parser");
 const xml2js = require("xml2js");
+const crypto = require("crypto");
 const express = require("express");
 const { ServiceBusClient } = require('@azure/service-bus');
 
@@ -35,13 +36,13 @@ app.use(
 );
 
 
-// function isValidHmacSignature(reqBody, signatureHeader) {
-//   const computed = crypto
-//     .createHmac('sha256', hmacKey)
-//     .update(reqBody, 'utf8')
-//     .digest('base64');
-//   return computed === signatureHeader;
-// }
+function isValidHmacSignature(reqBody, signatureHeader) {
+  const computed = crypto
+    .createHmac('sha256', hmacKey)
+    .update(reqBody, 'utf8')
+    .digest('base64');
+  return computed === signatureHeader;
+}
 async function sendToQueue(payload) {
   const message = {
     body: payload,
@@ -61,7 +62,7 @@ async function sendToQueue(payload) {
 
 app.post('/docusign/webhook', async (req, res) => {
   const contentType = req.headers['content-type'];
-//   const signature = req.headers['x-docusign-signature-1'];
+  const signature = req.headers['x-docusign-signature-1'];
 
   console.log("📩 Content-Type:", contentType);
 //  console.log("📩 Signature:", signature);
@@ -69,9 +70,9 @@ app.post('/docusign/webhook', async (req, res) => {
   if (contentType.includes('xml')) {
     const rawXml = req.body;
 
-    // if (!isValidHmacSignature(rawXml, signature)) {
-    //   return res.status(401).send('Invalid signature (XML)');
-    // }
+    if (!isValidHmacSignature(rawXml, signature)) {
+      return res.status(401).send('Invalid signature (XML)');
+    }
 
     xml2js.parseString(rawXml, { explicitArray: false }, async (err, result) => {
       if (err) return res.status(400).send('Invalid XML');
@@ -87,9 +88,9 @@ app.post('/docusign/webhook', async (req, res) => {
     const jsonBody = req.body;
     const rawJsonString = JSON.stringify(jsonBody);
 
-    // if (!isValidHmacSignature(rawJsonString, signature)) {
-    //   return res.status(401).send('Invalid signature (JSON)');
-    // }
+    if (!isValidHmacSignature(rawJsonString, signature)) {
+      return res.status(401).send('Invalid signature (JSON)');
+    }
     console.log("JSON", jsonBody);
     // Adjust this as needed based on JSON structure
     await sendToQueue(jsonBody);
