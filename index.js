@@ -27,7 +27,7 @@ const PORT = process.env.PORT || 3000;
 // app.use(express.json());
 app.use(bodyParser.text({ type: '*/xml' }));
 
-app.post('docusign/webhook', async (req, res) => {
+app.post('/docusign/webhook', async (req, res) => {
   console.info("docusign webhook event call before");  
   const rawXml = req.body;
   const docusignSignature = req.headers['x-docusign-signature-1'];
