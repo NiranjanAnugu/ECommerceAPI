@@ -28,10 +28,11 @@ const PORT = process.env.PORT || 3000;
 app.use(bodyParser.text({ type: '*/xml' }));
 
 app.post('docusign/webhook', async (req, res) => {
-
+  console.info("docusign webhook event call before");  
   const rawXml = req.body;
   const docusignSignature = req.headers['x-docusign-signature-1'];
-
+  console.info("docusign webhook event after");
+  console.log(rawXml);
   if (!isValidHmacSignature(rawXml, docusignSignature)) {
     console.warn('❌ Invalid HMAC Signature – rejected');
     return res.status(401).send('Unauthorized: Invalid signature');
@@ -60,12 +61,12 @@ app.post('docusign/webhook', async (req, res) => {
   });
 });
 app.get("/", (req, res) =>{
-        console.warn("PORT THIS IS TEST");
+        console.warn("Hellooo! This is Niranjan Reddy Anugu.");
 res.send("Hellooo! This is Niranjan Reddy Anugu.")
 });
 
 app.get("/greet", (req, res) =>{
-    console.log("PORT THIS IS TEST");
+    console.info("Welcome to the Node.js API!");
 res.json({"message": "Welcome to the Node.js API!"});
 });
 
