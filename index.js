@@ -7,6 +7,17 @@ const { ServiceBusClient } = require('@azure/service-bus');
 const app = express();
 const connectionString = process.env.AZURE_SERVICE_BUS_CONNECTION_STRING;
 const queueName = process.env.AZURE_SERVICE_BUS_QUEUE_NAME;
+const hmacSecret = process.env.DOCUSIGN_HMAC_SECRET;
+
+function isValidHmacSignature(reqBody, signatureHeader) {
+  const computed = crypto
+    .createHmac('sha256', hmacSecret)
+    .update(reqBody, 'utf8')
+    .digest('base64');
+  return computed === signatureHeader;
+}
+
+
 const sbClient = new ServiceBusClient(connectionString);
 const sender = sbClient.createSender(queueName);
 
@@ -17,6 +28,15 @@ const PORT = process.env.PORT || 3000;
 app.use(bodyParser.text({ type: '*/xml' }));
 
 app.post('docusign/webhook', async (req, res) => {
+
+  const rawXml = req.body;
+  const docusignSignature = req.headers['x-docusign-signature-1'];
+
+  if (!isValidHmacSignature(rawXml, docusignSignature)) {
+    console.warn('❌ Invalid HMAC Signature – rejected');
+    return res.status(401).send('Unauthorized: Invalid signature');
+  }
+
   xml2js.parseString(req.body, { explicitArray: false }, async (err, result) => {
     if (err) return res.status(400).send('Invalid XML');
 
