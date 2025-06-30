@@ -7,11 +7,11 @@ const { ServiceBusClient } = require('@azure/service-bus');
 const app = express();
 const connectionString = process.env.AZURE_SERVICE_BUS_CONNECTION_STRING;
 const queueName = process.env.AZURE_SERVICE_BUS_QUEUE_NAME;
-const hmac = process.env.DOCUSIGN_HMAC;
+const hmacKey = process.env.DOCUSIGN_HMAC_KEY;
 
 function isValidHmacSignature(reqBody, signatureHeader) {
   const computed = crypto
-    .createHmac('sha256', hmac)
+    .createHmac('sha256', hmacKey)
     .update(reqBody, 'utf8')
     .digest('base64');
   return computed === signatureHeader;
