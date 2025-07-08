@@ -52,7 +52,7 @@ async function sendToQueue(payload) {
 
   try {
     await sender.sendMessages(message);
-    console.log('✅ Sent to Service Bus:', JSON.stringify(payload, null, 2));
+    console.info('✅ Sent to Service Bus:', JSON.stringify(payload, null, 2));
   } catch (err) {
     console.error('❌ Service Bus Error:', err);
     throw err;
