@@ -69,8 +69,7 @@ const sig1 = req.headers['x-docusign-signature-1'];
   console.info(`Signature 1: ${sig1}`);
   console.info(`Signature 2: ${sig2}`);
 
-  console.log("📩 Content-Type:", contentType);
-//  console.log("📩 Signature:", signature);
+  console.log("📩 Content-Type value:", contentType);
 
   if (contentType.includes('xml')) {
     const rawXml = req.body;
